@@ -1,0 +1,116 @@
+:root {
+  --bg-color: #05070a;
+  --acc-cyan: #00f2ff;
+  --acc-magenta: #ff00ea;
+  --glass-bg: rgba(15, 20, 30, 0.7);
+  --text-primary: #e0e6ed;
+  --font-main: "Outfit", "Inter", sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  overflow: hidden;
+  display: flex;
+  height: 100vh;
+}
+
+#dashboard-container {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 320px;
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  margin: 0;
+  background: linear-gradient(90deg, var(--acc-cyan), var(--acc-magenta));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.05em;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: "JetBrains Mono", monospace;
+}
+
+#simulation-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.overlay-ui {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 10;
+  display: flex;
+  gap: 1rem;
+}
+
+.badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--acc-cyan);
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+}
+
+.header-subtitle {
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+
+.text-cyan {
+  color: var(--acc-cyan);
+}
+
+.text-magenta {
+  color: var(--acc-magenta);
+}
+
+.footer-container {
+  margin-top: auto;
+}
+
+.footer-text {
+  font-size: 0.7rem;
+  opacity: 0.3;
+}
+
+.badge-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}

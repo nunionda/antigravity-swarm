@@ -7,8 +7,8 @@ from core.worker import AgentWorker
 from utils.hpc_utils import HPCUtils
 
 class SwarmManager:
-    def __init__(self, swarm_size: int = 4):
-        self.workers = [AgentWorker() for _ in range(swarm_size)]
+    def __init__(self, swarm_size: int = 4, worker_class=AgentWorker):
+        self.workers = [worker_class() for _ in range(swarm_size)]
         self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=swarm_size)
         print(f"[SWARM] Initialized with {swarm_size} workers.")
 

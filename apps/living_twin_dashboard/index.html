@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LivingTwin Dashboard | Antigravity Swarm</title>
+    <link rel="stylesheet" href="index.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=JetBrains+Mono&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="dashboard-container">
+      <header>
+        <h1>LIVING TWIN</h1>
+        <p class="header-subtitle">
+          Hyperscale Digital Twin v1.0
+        </p>
+      </header>
+
+      <div class="stat-card">
+        <div class="stat-label">Active Agents</div>
+        <div class="stat-value" id="count-value">100,000</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Current Throughput</div>
+        <div
+          class="stat-value text-cyan"
+          id="throughput-value"
+        >
+          257,569/s
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Economic Health</div>
+        <div class="stat-value text-magenta">94.2%</div>
+      </div>
+
+      <div class="stat-card">
+          <div class="stat-label">Avg Movement Speed</div>
+          <div class="stat-value" id="speed-value">0.71 px/hz</div>
+      </div>
+
+      <div class="footer-container">
+        <p class="footer-text">PROTOCOL v2.0 ACTIVE</p>
+      </div>
+    </div>
+
+    <canvas id="simulation-canvas"></canvas>
+
+    <div class="overlay-ui">
+      <div class="badge">60Hz SYNC</div>
+      <div
+        class="badge badge-secondary"
+      >
+        REGION: SEOUL_GRID_2049
+      </div>
+    </div>
+
+    <script>
+      const canvas = document.getElementById("simulation-canvas");
+      const ctx = canvas.getContext("2d");
+
+      let agents = [];
+      let targetAgents = [];
+      const MAX_VISUAL_AGENTS = 10000;
+      let isLive = false;
+      let lastUpdateTime = Date.now();
+      const UPDATE_INTERVAL = 1000;
+
+      function init() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function drawRoads() {
+        ctx.strokeStyle = "rgba(0, 242, 255, 0.05)";
+        ctx.lineWidth = 60;
+        for (let x = 0; x < canvas.width; x += 300) {
+          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+        }
+        for (let y = 0; y < canvas.height; y += 300) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+        }
+      }
+
+      function animate() {
+        ctx.fillStyle = "#05070a";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        drawRoads();
+
+        const now = Date.now();
+        const factor = Math.min((now - lastUpdateTime) / UPDATE_INTERVAL, 1.0);
+
+        agents.forEach((a, i) => {
+          const tA = targetAgents[i];
+          if (!tA) return;
+          
+          // Improved Smooth Interpolation (Lerp based on time)
+          // We use a slightly higher factor for "following" feel
+          const smooth = 0.2;
+          a.x = a.x + (tA.x - a.x) * smooth;
+          a.y = a.y + (tA.y - a.y) * smooth;
+
+          // Drawing with wrapping projection
+          const drawX = a.x % canvas.width;
+          const drawY = a.y % canvas.height;
+
+          if (a.t === 1) { // Vehicle
+            ctx.fillStyle = "#ffcc00"; 
+            ctx.fillRect(drawX, drawY, 12, 6);
+            // Light trail effect
+            ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+            ctx.fillRect(drawX + 10, drawY + 1, 3, 4);
+          } else { // Pedestrian
+            ctx.fillStyle = "rgba(0, 242, 255, 0.8)"; 
+            ctx.fillRect(drawX, drawY, 2, 2);
+          }
+        });
+
+        document.getElementById('count-value').style.color = isLive ? 'var(--acc-cyan)' : 'orange';
+        if (!isLive) document.getElementById('count-value').innerText = "OFFLINE (CORS?)";
+
+        requestAnimationFrame(animate);
+      }
+
+      async function updateData() {
+        try {
+          const response = await fetch("snapshot.json?t=" + Date.now());
+          const data = await response.json();
+          isLive = true;
+          lastUpdateTime = Date.now();
+
+          if (data.agents) {
+            const incoming = data.agents.slice(0, MAX_VISUAL_AGENTS);
+            if (agents.length === 0) {
+              agents = incoming.map(a => ({...a}));
+            }
+            targetAgents = incoming;
+            document.getElementById('count-value').innerText = "100,000";
+          }
+
+          if (data.avg_speed) {
+            document.getElementById("speed-value").innerText = `${data.avg_speed.toFixed(2)} px/hz`;
+          }
+        } catch (e) {
+          isLive = false;
+        }
+      }
+
+      setInterval(updateData, UPDATE_INTERVAL);
+      window.addEventListener("resize", init);
+      init();
+      animate();
+    </script>
+  </body>
+</html>

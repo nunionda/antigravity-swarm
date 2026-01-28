@@ -1,0 +1,33 @@
+body { 
+    margin: 0; 
+    background: #05070a; 
+    color: #00f2ff; 
+    font-family: 'Outfit', sans-serif; 
+    overflow: hidden; 
+}
+
+#info { 
+    position: absolute; 
+    top: 20px; 
+    left: 20px; 
+    z-index: 10; 
+    pointer-events: none; 
+}
+
+.stat { 
+    font-size: 24px; 
+    font-weight: bold; 
+    text-shadow: 0 0 10px #00f2ff; 
+}
+
+.label { 
+    font-size: 12px; 
+    opacity: 0.5; 
+}
+
+.status { 
+    margin-top: 10px; 
+    color: #ff00ea; 
+    text-transform: uppercase; 
+    letter-spacing: 2px; 
+}
