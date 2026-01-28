@@ -2,6 +2,7 @@
 LivingTwin: Twin Engine
 Hyperscale orchestrator for 100,000 agent digital twin.
 """
+import os
 import numpy as np
 from core.manager import SwarmManager
 from simulations.living_twin.agent_dynamics import DynamicsKernel
@@ -31,6 +32,9 @@ class LivingTwinEngine:
             "status": np.zeros(agent_count, dtype=np.int32)
         }
         print(f"🏙️ [TWIN] City Initialized: {agent_count:,} agents in Pinned Memory.")
+        
+        # Ensure snapshot directory exists
+        os.makedirs("apps/living_twin_dashboard", exist_ok=True)
 
     @HPCUtils.benchmark_latency
     def update_world(self, iteration: int):
